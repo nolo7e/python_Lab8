@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  service2:
+    build:
+      context: .
+      dockerfile: service2/Dockerfile
+    container_name: service2
+    ports:
+      - "50052:50052"
+    command: sh -c "python populate_db.py && python server.py"
+
+  service1:
+    build:
+      context: .
+      dockerfile: service1/Dockerfile
+    container_name: service1
+    ports:
+      - "8000:8000"
+    depends_on:
+      - service2
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
